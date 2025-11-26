@@ -62,8 +62,8 @@ function sendMsg(mobileNumber, name) {
 // run scheduler once
 async function runOnce() {
   const now = new Date();
-  const targetHour = 16;
-  const targetMinute = 50;
+  const targetHour = 0;
+  const targetMinute = 5;
 
   try {
     const forms = await formModel.find({
