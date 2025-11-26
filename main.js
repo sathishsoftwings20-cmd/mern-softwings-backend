@@ -8,9 +8,17 @@ import { startSmsScheduler } from "./jobs/smsScheduler.js"; // import the schedu
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+// ✅ CORS configuration
+app.use(cors({
+    origin: "https://softwingsreact-git-main-sathishs-projects-4ebf018b.vercel.app", // your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true, // allow cookies if needed
+}));
+
+// Parse JSON
 app.use(express.json());
 
+// Routes
 app.use("/form", formRoute);
 app.use("/auth", userRoute);
 
