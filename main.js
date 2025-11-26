@@ -3,19 +3,34 @@ import cors from "cors";
 import formRoute from "./Routes/Form/formRoutes.js";
 import userRoute from "./Routes/User/userRoutes.js";
 import { connectDB } from "./lib/db.js";
-import { startSmsScheduler } from "./jobs/smsScheduler.js"; // import the scheduler
+import { startSmsScheduler } from "./jobs/smsScheduler.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// ✅ CORS configuration
+// ✅ Proper CORS setup for preflight requests
+const allowedOrigins = [
+    "https://softwingsreact-git-main-sathishs-projects-4ebf018b.vercel.app",
+    "http://localhost:3000"
+];
+
 app.use(cors({
-    origin: "https://softwingsreact-git-main-sathishs-projects-4ebf018b.vercel.app", // your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // allow cookies if needed
+    origin: function(origin, callback){
+        // allow requests with no origin (like mobile apps, curl)
+        if(!origin) return callback(null, true);
+        if(allowedOrigins.indexOf(origin) === -1){
+            const msg = "The CORS policy for this site does not allow access from the specified Origin.";
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+    credentials: true
 }));
 
-// Parse JSON
+// ✅ Handle preflight requests
+app.options("*", cors());
+
 app.use(express.json());
 
 // Routes
@@ -25,9 +40,7 @@ app.use("/auth", userRoute);
 // Connect DB then start server and scheduler
 connectDB()
   .then(() => {
-    // Start scheduler AFTER DB is connected
     startSmsScheduler();
-
     app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
   })
   .catch((err) => {
