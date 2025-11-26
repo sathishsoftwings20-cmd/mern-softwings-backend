@@ -6,12 +6,12 @@ import { connectDB } from "./lib/db.js";
 import { startSmsScheduler } from "./jobs/smsScheduler.js";
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 10000;
 
 // ✅ Proper CORS setup for preflight requests
 const allowedOrigins = [
     "https://softwingsreact-git-main-sathishs-projects-4ebf018b.vercel.app",
-    "http://localhost:3000"
+    "http://localhost:10000"
 ];
 
 app.use(cors({
