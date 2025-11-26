@@ -16,15 +16,30 @@ export const listForm = async (req, res) => {
 };
 
 // Create a new form
+
 export const createForm = async (req, res) => {
   try {
-    const newForm = await formModel.create(req.body);
+    // expect req.body.date to be ISO or convertible to Date
+    const payload = {
+      ...req.body,
+      smsSent: false, // explicit but schema default will handle it
+    };
+
+    const newForm = await formModel.create(payload);
     return res
       .status(201)
       .json({ success: true, message: "Form created", data: newForm });
   } catch (error) {
     console.error("createForm error:", error);
-    // If you want to surface validation errors from mongoose, you could inspect error.name === 'ValidationError'
+    if (error.name === "ValidationError") {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Validation failed",
+          errors: error.errors,
+        });
+    }
     return res
       .status(400)
       .json({ success: false, message: "Failed to create form" });
