@@ -63,7 +63,7 @@ function sendMsg(mobileNumber, name) {
 async function runOnce() {
   const now = new Date();
   const targetHour = 16;
-  const targetMinute = 23;
+  const targetMinute = 30;
 
   try {
     const forms = await formModel.find({
